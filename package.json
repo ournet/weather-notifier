@@ -1,0 +1,54 @@
+{
+  "name": "weather-notifier",
+  "version": "0.1.0",
+  "description": "Ournet weather notifier app",
+  "main": "./lib/app.js",
+  "scripts": {
+    "start": "node ./lib/app",
+    "pretest": "npm run clean && npm run tsc",
+    "test": "ava --no-cache --verbose lib/**/*.test.js",
+    "posttest": "npm run clean-test-code",
+    "tsc": "tsc",
+    "tscw": "tsc -w",
+    "preversion": "npm run tsc",
+    "postversion": "git push --follow-tags",
+    "prepublishOnly": "npm run tsc && npm run clean-test-code",
+    "clean": "rimraf ./lib && rimraf ./types",
+    "clean-test-code": "rimraf ./lib/**/*.test.js && rimraf ./types/**/*.test.d.ts"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ournet/weather-notifier.git"
+  },
+  "keywords": [
+    "notifier",
+    "weather",
+    "ournet"
+  ],
+  "author": "Dumitru Cantea",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ournet/weather-notifier/issues"
+  },
+  "homepage": "https://github.com/Ournet/weather-notifier#readme",
+  "devDependencies": {
+    "@types/ms": "^0.7.30",
+    "@types/node": "latest",
+    "@types/request": "^2.47.1",
+    "ava": "^0.23.0",
+    "rimraf": "^2.6.2",
+    "typescript": "latest"
+  },
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "moment": "^2.17.1",
+    "ms": "^2.1.1",
+    "ournet.links": "^0.4.3",
+    "ournet.logger": "^0.1.0",
+    "ournet.web.data": "^0.1.4",
+    "request": "^2.87.0"
+  }
+}
