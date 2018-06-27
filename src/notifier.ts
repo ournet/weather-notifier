@@ -5,7 +5,7 @@ import * as Data from './data';
 import * as moment from 'moment';
 const Locales = require('../locales.json');
 import logger from './logger';
-import * as ms from 'ms';
+import ms = require('ms');
 import { getPlaceIds } from './places';
 import { createNotification, PushNotification } from './notification';
 
