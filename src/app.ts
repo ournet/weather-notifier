@@ -21,7 +21,7 @@ if (!API_KEY || !APP_ID || !COUNTRY || !LANG) {
 	throw 'API_KEY, APP_ID, COUNTRY and LANG are required';
 }
 
-const IS_TEST = true;//['true', '1', 'True'].indexOf(process.env.IS_TEST) > -1;
+const IS_TEST = ['true', '1', 'True'].indexOf(process.env.IS_TEST) > -1;
 
 function start() {
 	return notifier.send(API_KEY, APP_ID, COUNTRY, LANG, IS_TEST);

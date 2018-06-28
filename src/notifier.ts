@@ -13,11 +13,14 @@ export async function send(apiKey: string, appId: string, country: string, lang:
 	let sumRecipients = 0;
 
 	for (let placeId of placeIds) {
-		const notification = await createPlaceNotification(country, lang, placeId);
-		if (notification) {
-			const result = await sendNotification(apiKey, appId, notification, isTest);
-			sumRecipients += result.recipients;
-			break;
+		try {
+			const notification = await createPlaceNotification(country, lang, placeId);
+			if (notification) {
+				const result = await sendNotification(apiKey, appId, notification, isTest);
+				sumRecipients += result.recipients;
+			}
+		} catch (e) {
+			logger.error(e);
 		}
 	}
 
