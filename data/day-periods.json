@@ -1,0 +1,33 @@
+{
+  "ro": [
+    {
+      "name": "noapte",
+      "in_name": "noaptea",
+      "from": 22,
+      "to": 0
+    },
+    {
+      "name": "noapte",
+      "in_name": "noaptea",
+      "from": 0,
+      "to": 5
+    },
+    {
+      "name": "dimineață",
+      "in_name": "dimineața",
+      "from": 5,
+      "to": 12
+    },
+    {
+      "name": "după-amiază",
+      "from": 12,
+      "to": 18
+    },
+    {
+      "name": "seară",
+      "in_name": "seara",
+      "from": 18,
+      "to": 22
+    }
+  ]
+}

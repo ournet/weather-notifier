@@ -5,6 +5,8 @@ import * as Data from '../data';
 import { Place, ForecastDay, getPlaceName } from '../place';
 import { PushNotification } from './notification';
 import { getForecastSymbolName } from '../utils';
+import * as util from 'util';
+import { getDayPeriodName } from '../day-periods';
 
 export async function createPlaceNotification(country: string, lang: string, placeId: number)
 	: Promise<PushNotification> {
@@ -12,7 +14,6 @@ export async function createPlaceNotification(country: string, lang: string, pla
 	placeId = parseInt(placeId.toString());
 	const links = Links.sitemap(lang);
 	const host = 'https://' + Links.getHost('weather', country);
-	const locales = Locales[lang];
 
 	const placeData = await Data.get({
 		place: ['placeForecast', {
@@ -41,7 +42,11 @@ export async function createPlaceNotification(country: string, lang: string, pla
 
 	const notification = createSymbolNotification(todayForecast, tomorrowForecast, lang, place);
 	if (notification) {
-		notification.url = host + links.weather.place(place.id.toString());
+		notification.url = host + links.weather.place(place.id.toString(), {
+			utm_source: 'weather-notifier-app',
+			utm_campaign: 'weather-notifications',
+			utm_medium: 'push-notification'
+		});
 	}
 
 	return notification;
@@ -56,6 +61,8 @@ function createSymbolNotification(prevForecast: ForecastDay, currentForecast: Fo
 		return null;
 	}
 
+	const locales = Locales[lang];
+
 	const time = currentForecast.times.find(item => item.symbol.number === currentMaxSymbol);
 	const date = moment(time.time).tz(place.timezone).locale(lang);
 	const placeName = getPlaceName(place, lang);
@@ -66,10 +73,12 @@ function createSymbolNotification(prevForecast: ForecastDay, currentForecast: Fo
 	const maxTempTime = timesByTemp[0];
 	const minTempTime = timesByTemp[timesByTemp.length - 1];
 
+	const dayPeriod = getDayPeriodName(date.hour(), lang);
+
 	const notification: PushNotification = {
-		title: `${placeName}, ${date.format('dddd')}: ${symbolName.split(/,/)[0]}`,
+		title: `${placeName}, ${locales.tomorrow}: ${symbolName.split(/,/)[0]}`,
 		iconUrl: formatSymbolIconUrl(currentMaxSymbol),
-		content: `${Math.round(maxTempTime.t.value)}° .. ${Math.round(minTempTime.t.value)}°, ${symbolName}`,
+		content: `${Math.round(maxTempTime.t.value)}°C .. ${Math.round(minTempTime.t.value)}°, ${symbolName} ${dayPeriod}`,
 		placeId: place.id,
 		url: null,
 		lang,
@@ -79,5 +88,5 @@ function createSymbolNotification(prevForecast: ForecastDay, currentForecast: Fo
 }
 
 function formatSymbolIconUrl(symbol: number) {
-	return `http://assets.ournetcdn.net/root/img/icons/weather/256/${symbol}.png`;
+	return `https://assets.ournetcdn.net/root/img/icons/weather/256/${symbol}.png`;
 }

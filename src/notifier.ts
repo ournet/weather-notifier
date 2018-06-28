@@ -25,14 +25,17 @@ export async function send(apiKey: string, appId: string, country: string, lang:
 }
 
 function sendNotification(apiKey: string, appId: string, notification: PushNotification, isTest: boolean): Promise<SendResult> {
-	console.log('sending notification', notification);
+	if (isTest) {
+		console.log('sending notification', notification);
+		return Promise.reject(`Stop`);
+	}
 	const body: any = {
 		app_id: appId,
 		contents: {},
 		headings: {},
 		url: notification.url,
 		delayed_option: 'timezone',
-		delivery_time_of_day: '12:10PM',
+		delivery_time_of_day: '7:00PM',
 		chrome_web_icon: notification.iconUrl,
 		// in seconds
 		ttl: Math.round(ms('4h')),
@@ -42,7 +45,7 @@ function sendNotification(apiKey: string, appId: string, notification: PushNotif
 		body.included_segments = ['Test Users'];
 	} else {
 		body.filters = [
-			{ field: 'last_session', relation: '>', value: 12 },
+			{ field: 'last_session', relation: '>', value: 24 },
 			{ operator: 'AND' },
 			{ field: 'tag', key: 'place-id', relation: '=', value: notification.placeId }
 		];

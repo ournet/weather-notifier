@@ -1,8 +1,10 @@
 {
   "ro": {
-    "today_horoscope": "Horoscopul zilei"
+    "after_hour_format": "După ora %s",
+    "tomorrow": "mâine"
   },
   "ru": {
-    "today_horoscope": "Ежедневный гороскоп"
+    "after_hour_format": "После %s",
+    "tomorrow": "завтра"
   }
 }
