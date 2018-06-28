@@ -3,13 +3,12 @@ const Locales = require('../../locales.json');
 import * as moment from 'moment-timezone';
 import * as Data from '../data';
 import { Place, ForecastDay, getPlaceName } from '../place';
-import { PushNotification } from './notification';
+import { PushNotification, getSymbolPriority } from './notification';
 import { getForecastSymbolName } from '../utils';
 import * as util from 'util';
 import { getDayPeriodName } from '../day-periods';
 
-export async function createPlaceNotification(country: string, lang: string, placeId: number)
-	: Promise<PushNotification> {
+export async function createPlaceNotification(country: string, lang: string, placeId: number): Promise<PushNotification> {
 
 	placeId = parseInt(placeId.toString());
 	const links = Links.sitemap(lang);
@@ -54,19 +53,19 @@ export async function createPlaceNotification(country: string, lang: string, pla
 
 function createSymbolNotification(prevForecast: ForecastDay, currentForecast: ForecastDay, lang: string, place: Place) {
 
-	const prevMaxSymbol = prevForecast.times.map(item => item.symbol.number).sort((a, b) => b - a)[0];
-	const currentMaxSymbol = currentForecast.times.map(item => item.symbol.number).sort((a, b) => b - a)[0];
+	const prevMaxSymbolPriority = prevForecast.times.map(item => getSymbolPriority(item.symbol.number)).sort((a, b) => b - a)[0];
+	const currentMaxSymbolPriority = currentForecast.times.map(item => getSymbolPriority(item.symbol.number)).sort((a, b) => b - a)[0];
 
-	if (currentMaxSymbol <= prevMaxSymbol || currentMaxSymbol <= 5) {
+	if (currentMaxSymbolPriority <= prevMaxSymbolPriority || currentMaxSymbolPriority < 1) {
 		return null;
 	}
 
 	const locales = Locales[lang];
 
-	const time = currentForecast.times.find(item => item.symbol.number === currentMaxSymbol);
+	const time = currentForecast.times.find(item => getSymbolPriority(item.symbol.number) === currentMaxSymbolPriority);
 	const date = moment(time.time).tz(place.timezone).locale(lang);
 	const placeName = getPlaceName(place, lang);
-	const symbolName = getForecastSymbolName(currentMaxSymbol, lang);
+	const symbolName = getForecastSymbolName(currentMaxSymbolPriority, lang);
 
 	const timesByTemp = currentForecast.times.sort((a, b) => b.t.value - a.t.value);
 
@@ -77,7 +76,7 @@ function createSymbolNotification(prevForecast: ForecastDay, currentForecast: Fo
 
 	const notification: PushNotification = {
 		title: `${placeName}, ${locales.tomorrow}: ${symbolName.split(/,/)[0]}`,
-		iconUrl: formatSymbolIconUrl(currentMaxSymbol),
+		iconUrl: formatSymbolIconUrl(currentMaxSymbolPriority),
 		content: `${Math.round(maxTempTime.t.value)}°C .. ${Math.round(minTempTime.t.value)}°, ${symbolName} ${dayPeriod}`,
 		placeId: place.id,
 		url: null,

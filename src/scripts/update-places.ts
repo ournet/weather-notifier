@@ -25,7 +25,6 @@ import { delay } from '../utils';
 import { addPlaceIds } from '../places';
 import * as zlib from 'zlib';
 import * as http from 'https';
-import { writeFileSync } from 'fs';
 const parseCsv = require('csv-parse/lib/sync');
 
 
