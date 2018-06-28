@@ -65,7 +65,7 @@ function createSymbolNotification(prevForecast: ForecastDay, currentForecast: Fo
 	const time = currentForecast.times.find(item => getSymbolPriority(item.symbol.number) === currentMaxSymbolPriority);
 	const date = moment(time.time).tz(place.timezone).locale(lang);
 	const placeName = getPlaceName(place, lang);
-	const symbolName = getForecastSymbolName(currentMaxSymbolPriority, lang);
+	const symbolName = getForecastSymbolName(time.symbol.number, lang);
 
 	const timesByTemp = currentForecast.times.sort((a, b) => b.t.value - a.t.value);
 
@@ -76,7 +76,7 @@ function createSymbolNotification(prevForecast: ForecastDay, currentForecast: Fo
 
 	const notification: PushNotification = {
 		title: `${placeName}, ${locales.tomorrow}: ${symbolName.split(/,/)[0]}`,
-		iconUrl: formatSymbolIconUrl(currentMaxSymbolPriority),
+		iconUrl: formatSymbolIconUrl(time.symbol.number),
 		content: `${Math.round(maxTempTime.t.value)}°C .. ${Math.round(minTempTime.t.value)}°, ${symbolName} ${dayPeriod}`,
 		placeId: place.id,
 		url: null,

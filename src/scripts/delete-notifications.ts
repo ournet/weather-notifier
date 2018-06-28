@@ -30,6 +30,7 @@ async function start() {
         for (let item of notifications) {
             await deleteNotification(API_KEY, APP_ID, item.id);
         }
+        offset += limit;
     }
     while (notifications.length === limit);
 }
