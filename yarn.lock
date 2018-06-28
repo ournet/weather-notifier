@@ -54,6 +54,12 @@
   dependencies:
     "@types/node" "*"
 
+"@types/moment-timezone@^0.5.6":
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/@types/moment-timezone/-/moment-timezone-0.5.6.tgz#21341f5cbeeca6e773702b24fffd39f06bf6e203"
+  dependencies:
+    moment ">=2.14.0"
+
 "@types/ms@^0.7.30":
   version "0.7.30"
   resolved "https://registry.yarnpkg.com/@types/ms/-/ms-0.7.30.tgz#f6c38b7ecbbf698b0bbd138315a0f0f18954f85f"
@@ -1939,6 +1945,10 @@ meow@^3.7.0:
     redent "^1.0.0"
     trim-newlines "^1.0.0"
 
+metno-symbols@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/metno-symbols/-/metno-symbols-0.1.1.tgz#8dee2d38fee58fa06ea90d6d07b0760a9c2b31fe"
+
 micromatch@^2.1.5:
   version "2.3.11"
   resolved "https://registry.yarnpkg.com/micromatch/-/micromatch-2.3.11.tgz#86677c97d1720b363431d04d0d15293bd38c1565"
@@ -2004,7 +2014,13 @@ mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-moment@^2.17.1:
+moment-timezone@^0.5.21:
+  version "0.5.21"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.21.tgz#3cba247d84492174dbf71de2a9848fa13207b845"
+  dependencies:
+    moment ">= 2.9.0"
+
+"moment@>= 2.9.0", moment@>=2.14.0:
   version "2.22.2"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.2.tgz#3c257f9839fc0e93ff53149632239eb90783ff66"
 
@@ -2184,9 +2200,9 @@ ournet.logger@^0.1.0:
     winston "^2.1.1"
     winston-loggly "^1.2.0"
 
-ournet.web.data@^0.1.4:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/ournet.web.data/-/ournet.web.data-0.1.6.tgz#26e833871359a79f8fa354523340ac8820624f6e"
+ournet.web.data@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/ournet.web.data/-/ournet.web.data-0.1.7.tgz#63a4e5908f81ad9ade2e6c2cb1a48c5bddee40d7"
   dependencies:
     lodash.defaultsdeep "^4.6.0"
     ournet.api.client "^0.1.0"

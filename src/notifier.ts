@@ -1,23 +1,38 @@
 
 import * as request from 'request';
-import * as Links from 'ournet.links';
-import * as Data from './data';
-import * as moment from 'moment';
-const Locales = require('../locales.json');
 import logger from './logger';
 import ms = require('ms');
 import { getPlaceIds } from './places';
-import { createNotification, PushNotification } from './notification';
+import { PushNotification } from './notifications/notification';
+import { createPlaceNotification } from './notifications/place-notification';
+
+export async function send(apiKey: string, appId: string, country: string, lang: string, isTest: boolean) {
+
+	const placeIds = getPlaceIds(country);
+
+	let sumRecipients = 0;
+
+	for (let placeId of placeIds) {
+		const notification = await createPlaceNotification(country, lang, placeId);
+		if (notification) {
+			const result = await sendNotification(apiKey, appId, notification, isTest);
+			sumRecipients += result.recipients;
+			break;
+		}
+	}
+
+	logger.warn('Total recipients: ' + sumRecipients);
+}
 
 function sendNotification(apiKey: string, appId: string, notification: PushNotification, isTest: boolean): Promise<SendResult> {
-
+	console.log('sending notification', notification);
 	const body: any = {
 		app_id: appId,
 		contents: {},
 		headings: {},
 		url: notification.url,
 		delayed_option: 'timezone',
-		delivery_time_of_day: '7:00PM',
+		delivery_time_of_day: '12:10PM',
 		chrome_web_icon: notification.iconUrl,
 		// in seconds
 		ttl: Math.round(ms('4h')),
@@ -58,24 +73,8 @@ function sendNotification(apiKey: string, appId: string, notification: PushNotif
 	});
 }
 
-export async function send(apiKey: string, appId: string, country: string, lang: string, isTest: boolean) {
-
-	const placeIds = getPlaceIds(country);
-
-	let sumRecipients = 0;
-
-	for (let placeId of placeIds) {
-		const notification = await createNotification(country, lang, placeId);
-		if (notification) {
-			const result = await sendNotification(apiKey, appId, notification, isTest);
-			sumRecipients += result.recipients;
-		}
-	}
-
-	logger.warn('Total recipients: ' + sumRecipients);
-}
-
 type SendResult = {
 	recipients: number
 	errors?: any
 }
+

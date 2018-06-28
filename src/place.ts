@@ -44,4 +44,48 @@ export interface Place {
     wikiId?: string
     // wiki?: IPlaceWiki
     admin1?: Place
+
+    forecast: Forecast
+}
+
+export type Forecast = {
+    days: ForecastDay[]
+}
+
+export type ForecastDay = {
+    date: string
+    times: ForecastTime[]
+}
+
+export type ForecastTime = {
+    time: number
+    symbol: {
+        number: number
+    }
+    wind: {
+        dir: {
+            code: string
+        }
+        speed: {
+            mps: number
+            beaufort: number
+        }
+    }
+    t: {
+        unit: 'celsius'
+        value: number
+    }
+    pressure: {
+        unit: 'hPa'
+        value: number
+    }
+    humidity: {
+        percent: number
+    }
+    cloudiness: {
+        percent: number
+    }
+    fog: {
+        percent: number
+    }
 }
