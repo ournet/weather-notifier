@@ -5,6 +5,6 @@ const DATA: { [lang: string]: [{ name: string, in_name?: string, from: number, t
     = require('../data/day-periods.json');
 
 export function getDayPeriodName(hour: number, lang: string): string {
-    const item = DATA[lang].find(item => item.from >= hour && item.to < hour);
+    const item = DATA[lang].find(item => item.from <= hour && item.to > hour);
     return item.in_name || item.name;
 }
