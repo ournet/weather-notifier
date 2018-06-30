@@ -2187,9 +2187,9 @@ ournet.api.client@^0.1.0:
     lru-cache "^4.0.2"
     request "^2.79.0"
 
-ournet.links@^0.4.3:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/ournet.links/-/ournet.links-0.4.3.tgz#1e40555329f84a4dad0e81caab091d4f33571b6c"
+ournet.links@^0.4.4:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/ournet.links/-/ournet.links-0.4.4.tgz#863cd2e0b8d703048fdd1ae04ad1cad9f06a90e5"
   dependencies:
     urlset "^0.6.0"
 
