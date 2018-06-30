@@ -55,5 +55,36 @@
       "from": 18,
       "to": 22
     }
+  ],
+  "sq": [
+    {
+      "name": "natë",
+      "in_name": "natën",
+      "from": 0,
+      "to": 4
+    },
+    {
+      "name": "mëngjes",
+      "in_name": "në mëngjes",
+      "from": 4,
+      "to": 9
+    },
+    {
+      "name": "paradite",
+      "from": 9,
+      "to": 12
+    },
+    {
+      "name": "pasdite",
+      "in_name": "në pasdite",
+      "from": 12,
+      "to": 18
+    },
+    {
+      "name": "mbrëmje",
+      "in_name": "në mbrëmje",
+      "from": 18,
+      "to": 24
+    }
   ]
 }

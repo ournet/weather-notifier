@@ -6,5 +6,9 @@
   "ru": {
     "after_hour_format": "После %s",
     "tomorrow": "завтра"
+  },
+  "sq": {
+    "after_hour_format": "Pas %s",
+    "tomorrow": "nesër"
   }
 }
