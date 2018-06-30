@@ -1,6 +1,8 @@
 
 require('dotenv').config({ silent: true });
 
+import logger from '../logger';
+
 //--	env
 const COUNTRY = process.env.COUNTRY;
 if (!COUNTRY) {
@@ -19,7 +21,6 @@ if (!API_KEY || !APP_ID || !COUNTRY) {
 
 
 import * as request from 'request';
-import logger from '../logger';
 import ms = require('ms');
 import { delay } from '../utils';
 import { addPlaceIds } from '../places';
