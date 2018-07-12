@@ -38,7 +38,7 @@ function sendNotification(apiKey: string, appId: string, notification: PushNotif
 		headings: {},
 		url: notification.url,
 		delayed_option: 'timezone',
-		delivery_time_of_day: '7:00PM',
+		delivery_time_of_day: '5:00PM',
 		chrome_web_icon: notification.iconUrl,
 		// in seconds
 		ttl: Math.round(ms('4h')),
