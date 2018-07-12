@@ -15,7 +15,7 @@ export function getPlaceIds(country: string): number[] {
 }
 
 export function addPlaceIds(country: string, ids: number[]): number[] {
-    const currentIds = uniq(getPlaceIds(country).concat(ids)).sort();
+    const currentIds = uniq(getPlaceIds(country).concat(ids));
     const lines = JSON.stringify(currentIds)
         .replace(/,/g, ',\n').replace(/\[/, '[\n').replace(/\]/, '\n]');
     writeFileSync(filePath(country), lines, 'utf8');
