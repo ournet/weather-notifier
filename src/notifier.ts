@@ -23,7 +23,7 @@ export async function send(apiKey: string, appId: string, country: string, lang:
 		} catch (e) {
 			logger.error(e);
 		}
-		await delay(1000);
+		await delay(300);
 	}
 
 	logger.warn('Total recipients: ' + sumRecipients);
