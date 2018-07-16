@@ -5,6 +5,7 @@ import ms = require('ms');
 import { getPlaceIds } from './places';
 import { PushNotification } from './notifications/notification';
 import { createPlaceNotification } from './notifications/place-notification';
+import { delay } from './utils';
 
 export async function send(apiKey: string, appId: string, country: string, lang: string, isTest: boolean) {
 
@@ -22,6 +23,7 @@ export async function send(apiKey: string, appId: string, country: string, lang:
 		} catch (e) {
 			logger.error(e);
 		}
+		await delay(1000);
 	}
 
 	logger.warn('Total recipients: ' + sumRecipients);
