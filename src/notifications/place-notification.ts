@@ -7,6 +7,7 @@ import { PushNotification, getSymbolPriority } from './notification';
 import { getForecastSymbolName } from '../utils';
 import * as util from 'util';
 import { getDayPeriodName } from '../day-periods';
+import logger from '../logger';
 
 export async function createPlaceNotification(country: string, lang: string, placeId: number): Promise<PushNotification> {
 
@@ -52,6 +53,11 @@ export async function createPlaceNotification(country: string, lang: string, pla
 }
 
 function createSymbolNotification(prevForecast: ForecastDay, currentForecast: ForecastDay, lang: string, place: Place) {
+
+	if (!prevForecast || !prevForecast.times || !currentForecast || !currentForecast.times) {
+		logger.warn(`invalid day forecast`);
+		return null;
+	}
 
 	const prevMaxSymbolPriority = prevForecast.times.map(item => getSymbolPriority(item.symbol.number)).sort((a, b) => b - a)[0];
 	const currentMaxSymbolPriority = currentForecast.times.map(item => getSymbolPriority(item.symbol.number)).sort((a, b) => b - a)[0];

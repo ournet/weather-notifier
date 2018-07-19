@@ -41,7 +41,7 @@ async function start(country: string) {
     let newUsers: string;
     while (countTries < 10) {
 
-        await delay(30);
+        await delay(30 * 1000);
 
         try {
             newUsers = await downloadNewUsers(csvFileUrl);
