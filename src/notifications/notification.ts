@@ -13,6 +13,11 @@ export function getSymbolPriority(symbol: number) {
 		return 0;
 	}
 
+	// burnita
+	if (symbol === 46) {
+		return 0;
+	}
+
 	// fog
 	if (symbol === 15) {
 		return 1;
