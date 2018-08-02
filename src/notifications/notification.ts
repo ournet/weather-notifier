@@ -13,8 +13,8 @@ export function getSymbolPriority(symbol: number) {
 		return 0;
 	}
 
-	// burnita
-	if (symbol === 46) {
+	// 46-Drizzle, 40-DrizzleSun, 24-DrizzleThunderSun
+	if ([46, 40, 24].includes(symbol)) {
 		return 0;
 	}
 
@@ -23,10 +23,12 @@ export function getSymbolPriority(symbol: number) {
 		return 1;
 	}
 
-	if (~[5, 9, 22].indexOf(symbol)) {
+	// 5-LightRainSun, 9-LightRain, 22-LightRainThunder
+	if ([5, 9, 22].includes(symbol)) {
 		return 0;
 	}
-	if (~[7, 20, 24, 23, 26, 30, 31, 40, 42, 46, 47].indexOf(symbol)) {
+
+	if ([7, 20, 24, 23, 26, 30, 31, 40, 42, 46, 47].includes(symbol)) {
 		return 7;
 	}
 	if (~[8, 21, 28, 33, 44, 49].indexOf(symbol)) {
