@@ -1,33 +1,33 @@
 import * as Links from 'ournet.links';
 const Locales = require('../../locales.json');
 import * as moment from 'moment-timezone';
-import * as Data from '../data';
 import { Place, ForecastDay, getPlaceName } from '../place';
 import { PushNotification, getSymbolPriority } from './notification';
 import { getForecastSymbolName } from '../utils';
-import * as util from 'util';
 import { getDayPeriodName } from '../day-periods';
 import logger from '../logger';
+import { createQueryApiClient, executeApiClient } from '../data';
+import { PlaceStringFields, ForecastReport, ForecastReportStringFields } from '@ournet/api-client';
 
-export async function createPlaceNotification(country: string, lang: string, placeId: number): Promise<PushNotification> {
+export async function createPlaceNotification(country: string, lang: string, placeId: string): Promise<PushNotification> {
 
-	placeId = parseInt(placeId.toString());
 	const links = Links.sitemap(lang);
 	const host = 'https://' + Links.getHost('weather', country);
 
-	const placeData = await Data.get({
-		place: ['placeForecast', {
-			placeId
-		}],
-	});
+	const placeData = await executeApiClient(createQueryApiClient<{ place: Place }>()
+		.placesPlaceById('place', { fields: PlaceStringFields }, { id: placeId }));
 
-	if (placeData.errors) {
-		throw new Error('OURNET API error');
+	if (!placeData.place) {
+		throw new Error(`Not found place: ${placeId}`);
 	}
 
 	const place: Place = placeData.place;
 
-	if (!place.forecast) {
+	const forecastData = await executeApiClient(createQueryApiClient<{ forecast: ForecastReport }>()
+		.weatherForecastReport('forecast', { fields: ForecastReportStringFields },
+			{ place: { latitude: place.latitude, longitude: place.longitude, timezone: place.timezone } }));
+
+	if (!forecastData.forecast) {
 		throw new Error(`Place with out forecast: ${place.id}`);
 	}
 

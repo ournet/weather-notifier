@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from "fs";
 import { uniq } from "./utils";
 import logger from "./logger";
 
-export function getPlaceIds(country: string): number[] {
+export function getPlaceIds(country: string): string[] {
     const file = filePath(country);
     try {
         const content = readFileSync(file, 'utf8');
@@ -14,7 +14,7 @@ export function getPlaceIds(country: string): number[] {
     }
 }
 
-export function addPlaceIds(country: string, ids: number[]): number[] {
+export function addPlaceIds(country: string, ids: string[]) {
     const currentIds = uniq(getPlaceIds(country).concat(ids));
     const lines = JSON.stringify(currentIds)
         .replace(/,/g, ',\n').replace(/\[/, '[\n').replace(/\]/, '\n]');

@@ -37,7 +37,7 @@ async function start(country: string) {
     const csvFileUrl = await requestCSVExport();
 
     let countTries = 0;
-    let placesIds: number[]
+    let placesIds: string[]
     let newUsers: string;
     while (countTries < 10) {
 
@@ -90,7 +90,7 @@ function downloadNewUsers(url: string) {
     });
 }
 
-function parsePlacesIdsFromUsers(csvData: string): number[] {
+function parsePlacesIdsFromUsers(csvData: string) {
     const lines: string[][] = parseCsv(csvData, { delimiter: ',' });
     if (!lines || !lines.length) {
         return [];
@@ -99,7 +99,7 @@ function parsePlacesIdsFromUsers(csvData: string): number[] {
     return lines.slice(1).map(items => {
         const stringTags = items[10] || '{}';
         const tags = JSON.parse(stringTags);
-        return tags && tags['place-id'] && parseInt(tags['place-id']);
+        return tags && tags['place-id'] && tags['place-id'];
     }).filter(id => !!id);
 }
 
