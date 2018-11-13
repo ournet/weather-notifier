@@ -1,13 +1,13 @@
 import * as Links from 'ournet.links';
 const Locales = require('../../locales.json');
 import * as moment from 'moment-timezone';
-import { Place, ForecastDay, getPlaceName } from '../place';
 import { PushNotification, getSymbolPriority } from './notification';
 import { getForecastSymbolName } from '../utils';
 import { getDayPeriodName } from '../day-periods';
 import logger from '../logger';
 import { createQueryApiClient, executeApiClient } from '../data';
-import { PlaceStringFields, ForecastReport, ForecastReportStringFields } from '@ournet/api-client';
+import { PlaceStringFields, ForecastReport, ForecastReportStringFields, Place, HourlyForecastDataPoint } from '@ournet/api-client';
+import { getPlaceName } from '../helpers';
 
 export async function createPlaceNotification(country: string, lang: string, placeId: string): Promise<PushNotification> {
 
@@ -15,30 +15,32 @@ export async function createPlaceNotification(country: string, lang: string, pla
 	const host = 'https://' + Links.getHost('weather', country);
 
 	const placeData = await executeApiClient(createQueryApiClient<{ place: Place }>()
-		.placesPlaceById('place', { fields: PlaceStringFields }, { id: placeId }));
+		.placesPlaceById('place', { fields: PlaceStringFields }, { id: placeId.toString() }));
 
 	if (!placeData.place) {
 		throw new Error(`Not found place: ${placeId}`);
 	}
 
-	const place: Place = placeData.place;
+	const place = placeData.place;
 
 	const forecastData = await executeApiClient(createQueryApiClient<{ forecast: ForecastReport }>()
 		.weatherForecastReport('forecast', { fields: ForecastReportStringFields },
 			{ place: { latitude: place.latitude, longitude: place.longitude, timezone: place.timezone } }));
 
-	if (!forecastData.forecast) {
+	if (!forecastData.forecast || !forecastData.forecast.details) {
 		throw new Error(`Place with out forecast: ${place.id}`);
 	}
 
 	const today = moment(new Date()).tz(place.timezone, false).locale(lang);
 	const tomorrow = moment(new Date()).tz(place.timezone, false).locale(lang).add(1, 'day');
 
-	const todayDateFormated = today.format('YYYY-MM-DD');
-	const tomorrowDateFormated = tomorrow.format('YYYY-MM-DD');
+	const dayFormat = 'YYYY-MM-DD';
 
-	const todayForecast = place.forecast.days.find(item => item.date === todayDateFormated);
-	const tomorrowForecast = place.forecast.days.find(item => item.date === tomorrowDateFormated);
+	const todayDateFormated = today.format(dayFormat);
+	const tomorrowDateFormated = tomorrow.format(dayFormat);
+
+	const todayForecast = forecastData.forecast.details.data.filter(item => moment(item.time * 1000).format(dayFormat) === todayDateFormated);
+	const tomorrowForecast = forecastData.forecast.details.data.filter(item => moment(item.time * 1000).format(dayFormat) === tomorrowDateFormated);
 
 	const notification = createSymbolNotification(todayForecast, tomorrowForecast, lang, place);
 	if (notification) {
@@ -52,15 +54,15 @@ export async function createPlaceNotification(country: string, lang: string, pla
 	return notification;
 }
 
-function createSymbolNotification(prevForecast: ForecastDay, currentForecast: ForecastDay, lang: string, place: Place) {
+function createSymbolNotification(prevForecast: HourlyForecastDataPoint[], currentForecast: HourlyForecastDataPoint[], lang: string, place: Place) {
 
-	if (!prevForecast || !prevForecast.times || !currentForecast || !currentForecast.times) {
+	if (!prevForecast || !currentForecast) {
 		logger.warn(`invalid day forecast`);
 		return null;
 	}
 
-	const prevMaxSymbolPriority = prevForecast.times.map(item => getSymbolPriority(item.symbol.number)).sort((a, b) => b - a)[0];
-	const currentMaxSymbolPriority = currentForecast.times.map(item => getSymbolPriority(item.symbol.number)).sort((a, b) => b - a)[0];
+	const prevMaxSymbolPriority = prevForecast.map(item => getSymbolPriority(item.icon)).sort((a, b) => b - a)[0];
+	const currentMaxSymbolPriority = currentForecast.map(item => getSymbolPriority(item.icon)).sort((a, b) => b - a)[0];
 
 	if (currentMaxSymbolPriority <= prevMaxSymbolPriority || currentMaxSymbolPriority < 1) {
 		return null;
@@ -68,12 +70,12 @@ function createSymbolNotification(prevForecast: ForecastDay, currentForecast: Fo
 
 	const locales = Locales[lang];
 
-	const time = currentForecast.times.find(item => getSymbolPriority(item.symbol.number) === currentMaxSymbolPriority);
+	const time = currentForecast.find(item => getSymbolPriority(item.icon) === currentMaxSymbolPriority);
 	const date = moment(time.time).tz(place.timezone).locale(lang);
 	const placeName = getPlaceName(place, lang);
-	const symbolName = getForecastSymbolName(time.symbol.number, lang);
+	const symbolName = getForecastSymbolName(time.icon, lang);
 
-	const timesByTemp = currentForecast.times.sort((a, b) => b.t.value - a.t.value);
+	const timesByTemp = currentForecast.sort((a, b) => b.temperature - a.temperature);
 
 	const maxTempTime = timesByTemp[0];
 	const minTempTime = timesByTemp[timesByTemp.length - 1];
@@ -82,8 +84,8 @@ function createSymbolNotification(prevForecast: ForecastDay, currentForecast: Fo
 
 	const notification: PushNotification = {
 		title: `${placeName}, ${locales.tomorrow}: ${symbolName.split(/,/)[0]}`,
-		iconUrl: formatSymbolIconUrl(time.symbol.number),
-		content: `${Math.round(maxTempTime.t.value)}°C .. ${Math.round(minTempTime.t.value)}°, ${symbolName} ${dayPeriod}`,
+		iconUrl: formatSymbolIconUrl(time.icon),
+		content: `${Math.round(maxTempTime.temperature)}°C .. ${Math.round(minTempTime.temperature)}°, ${symbolName} ${dayPeriod}`,
 		placeId: place.id,
 		url: null,
 		lang,

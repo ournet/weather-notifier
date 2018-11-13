@@ -4,7 +4,7 @@ export type PushNotification = {
 	url: string
 	title: string
 	content: string
-	placeId: number
+	placeId: string
 	iconUrl: string
 }
 
