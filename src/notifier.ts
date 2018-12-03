@@ -43,7 +43,7 @@ function sendNotification(apiKey: string, appId: string, notification: PushNotif
 		delivery_time_of_day: '5:00PM',
 		chrome_web_icon: notification.iconUrl,
 		// in seconds
-		ttl: Math.round(ms('4h')),
+		ttl: Math.round(ms('12h')),
 	};
 
 	if (isTest) {
