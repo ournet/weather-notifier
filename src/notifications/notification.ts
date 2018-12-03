@@ -20,7 +20,7 @@ export function getSymbolPriority(symbol: number) {
 
 	// fog
 	if (symbol === 15) {
-		return 1;
+		return 0;
 	}
 
 	// 5-LightRainSun, 9-LightRain, 22-LightRainThunder
