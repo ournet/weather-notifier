@@ -4,7 +4,7 @@
 
 git pull
 yarn
-tsc
+yarn tsc
 
 COUNTRY=ro node ./lib/scripts/update-places
 COUNTRY=ru node ./lib/scripts/update-places
